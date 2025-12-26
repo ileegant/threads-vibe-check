@@ -9,7 +9,14 @@ const DONATE_LINK = "https://send.monobank.ua/jar/3Koj5bwvda";
 const DEVELOPER_NAME = "ileegant";
 
 // 🔥 ЧОРНИЙ СПИСОК
-const BLACKLIST = ["russia", "putin", "moscow", "rusnya", "brattkka"];
+const BLACKLIST = [
+  "russia",
+  "putin",
+  "moscow",
+  "rusnya",
+  "brattkka",
+  "glosssex",
+];
 
 // 🎨 ПАЛІТРА
 const RECEIPT_COLORS = [
@@ -387,7 +394,8 @@ export default function Home() {
             НАХУЙ
           </h1>
           <p className="text-white font-mono text-lg mb-8 uppercase">
-            Цей нікнейм заблоковано системою.
+            СИСТЕМА ВИЯВИЛА КРИТИЧНЕ ПЕРЕВАНТАЖЕННЯ. <br />
+            Вхід дозволено лише особам з вагою {"<"} 70 кг.
           </p>
           <button
             onClick={() =>
@@ -396,7 +404,7 @@ export default function Home() {
             }
             className="px-8 py-3 bg-white text-black font-bold uppercase hover:bg-gray-200 transition transform hover:scale-105"
           >
-            Зрозумів, виходжу
+            Піти Поплакати
           </button>
         </div>
       )}
