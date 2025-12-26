@@ -16,6 +16,7 @@ const BLACKLIST = [
   "rusnya",
   "brattkka",
   "glosssex",
+  "drvlska",
 ];
 
 // 🎨 ПАЛІТРА
@@ -535,7 +536,7 @@ export default function Home() {
                 <div className="text-center border-b-2 border-dashed border-black/20 pb-4 mb-4">
                   {/* 🔥 ВІДОБРАЖЕННЯ АВАТАРКИ */}
                   {result.avatar ? (
-                    <div className="w-20 h-20 mx-auto mb-3 rounded-full border-1 border-black overflow-hidden bg-white shadow-sm relative z-10">
+                    <div className="w-20 h-20 mx-auto mb-3 rounded-full border-1 border-black overflow-hidden bg-white relative z-10">
                       {/* Важливо: використовуємо звичайний img, не Next/Image, щоб html-to-image його бачив */}
                       <img
                         src={result.avatar}
