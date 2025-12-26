@@ -5,13 +5,13 @@ import { toPng } from "html-to-image";
 import Barcode from "react-barcode";
 
 // 🔧 НАЛАШТУВАННЯ
-const DONATE_LINK = "https://send.monobank.ua/jar/ТВОЯ_БАНКА"; // <--- ВСТАВ ПОСИЛАННЯ
+const DONATE_LINK = "https://send.monobank.ua/jar/3Koj5bwvda";
 const DEVELOPER_NAME = "ileegant";
 
 // 🔥 ЧОРНИЙ СПИСОК
 const BLACKLIST = ["russia", "putin", "moscow", "rusnya", "brattkka"];
 
-// 🎨 ПАЛІТРА ЧЕКІВ
+// 🎨 ПАЛІТРА
 const RECEIPT_COLORS = [
   { hex: "#ffffff", name: "Classic White" },
   { hex: "#F4FF5F", name: "Acid Yellow" },
@@ -20,7 +20,6 @@ const RECEIPT_COLORS = [
   { hex: "#C7F9CC", name: "Mint Fresh" },
 ];
 
-// --- СПИСКИ ДАНИХ (Ті самі, що й були) ---
 const ARCHETYPES_LIST = [
   "Генерал Диванних Військ 🛋️",
   "Душніла 80 lvl 🤓",
@@ -201,9 +200,14 @@ interface VibeResult {
   superpower: string;
   stats: VibeStats;
   roast: string;
+  avatar?: string; // 🔥 ДОДАЛИ ПОЛЕ ДЛЯ АВАТАРКИ
 }
 
-const generateVibe = (username: string, posts: string[]): VibeResult => {
+const generateVibe = (
+  username: string,
+  posts: string[],
+  avatar?: string
+): VibeResult => {
   const textSeed = posts.length > 0 ? posts.join("").length : username.length;
   const nameSeed = username
     .split("")
@@ -219,6 +223,7 @@ const generateVibe = (username: string, posts: string[]): VibeResult => {
       boringness: (seed * 23) % 100,
     },
     roast: ROASTS_LIST[seed % ROASTS_LIST.length],
+    avatar: avatar, // Прокидуємо аватарку
   };
 };
 
@@ -231,9 +236,7 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isBanned, setIsBanned] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
   const [receiptBg, setReceiptBg] = useState(RECEIPT_COLORS[0].hex);
-
   const receiptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -270,7 +273,7 @@ export default function Home() {
 
     setLoading(true);
     setResult(null);
-    setLoadingStep("🔄 Підключаємось до серверів Meta...");
+    setLoadingStep("🔄 Підключаємось до Threads...");
 
     try {
       const response = await fetch("/api/get-threads", {
@@ -281,15 +284,16 @@ export default function Home() {
 
       const data = await response.json();
       const postsData = data.posts || [];
+      const avatarData = data.avatar || null; // Отримуємо аватарку
 
       setLoadingStep("🧠 Аналізуємо ваші думки...");
       await new Promise((r) => setTimeout(r, 800));
 
-      const aiResult = generateVibe(cleanNick, postsData);
+      const aiResult = generateVibe(cleanNick, postsData, avatarData);
       setResult(aiResult);
     } catch (error) {
       console.warn("API Error, generating locally");
-      const aiResult = generateVibe(cleanNick, []);
+      const aiResult = generateVibe(cleanNick, [], undefined);
       setResult(aiResult);
     } finally {
       setLoading(false);
@@ -375,7 +379,6 @@ export default function Home() {
         }
       `}</style>
 
-      {/* --- ЕКРАН БАНУ --- */}
       {isBanned && (
         <div className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center p-6 text-center animate-fade-in">
           <h1 className="text-6xl md:text-8xl font-black text-[#ff0000] mb-6 uppercase tracking-tighter shake">
@@ -398,7 +401,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* --- ХЕДЕР --- */}
       <header
         onClick={resetApp}
         className="fixed top-0 left-0 w-full h-12 bg-[#0a0a0a] text-white flex items-center justify-between px-4 md:px-6 z-50 shadow-md select-none border-b border-white/5 cursor-pointer hover:bg-[#1a1a1a] transition-colors"
@@ -411,37 +413,32 @@ export default function Home() {
         </div>
       </header>
 
-      {/* --- АЛЕРТ ПОМИЛОК --- */}
       {errorMsg && (
         <div className="fixed top-16 right-0 left-0 md:left-auto md:right-5 mx-4 md:mx-0 bg-[#ff4b4b] text-white px-4 py-3 font-bold text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black z-50 animate-bounce rounded-lg text-center">
           ⚠️ {errorMsg}
         </div>
       )}
 
-      {/* --- ГОЛОВНИЙ КОНТЕЙНЕР --- */}
       <main className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-4 md:p-6 font-mono pt-24 md:pt-20 pb-10 transition-colors duration-300">
         {!result && (
           <div className="text-center mb-8 animate-fade-in px-4">
             <h1 className="text-4xl md:text-5xl font-black mb-2 uppercase tracking-tighter text-white">
-              🧾 ФІСКАЛЬНИЙ ЧЕК ТВОГО ТРЕДСУ
+              🧾 ЧЕК ТВОГО ТРЕДСУ
             </h1>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs mx-auto">
               Аналізуємо рівень токсичності, ниття та успішного успіху.
               <br />
               Результат поверненню не підлягає.
-              <br />
             </p>
           </div>
         )}
 
         {!result ? (
-          /* --- ФОРМА ВВОДУ --- */
           <div className="w-full max-w-sm space-y-4 animate-fade-in">
             <div className="relative group">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg group-focus-within:text-white transition-colors">
                 @
               </span>
-              {/* ІНПУТ: КВАДРАТНИЙ І З ТІННЮ */}
               <input
                 type="text"
                 value={username}
@@ -451,8 +448,6 @@ export default function Home() {
                 onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
               />
             </div>
-
-            {/* КНОПКА СКАНУВАТИ: КВАДРАТНА */}
             <button
               onClick={handleGenerate}
               disabled={loading}
@@ -468,9 +463,7 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          /* --- РЕЗУЛЬТАТ --- */
           <div className="flex flex-col items-center gap-6 w-full max-w-[380px] animate-slide-up">
-            {/* ВИБІР КОЛЬОРУ */}
             <div className="flex gap-3 mb-2 bg-[#111] p-3 border border-white/10 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)]">
               {RECEIPT_COLORS.map((color) => (
                 <button
@@ -487,17 +480,14 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Контейнер для скріншоту */}
             <div
               ref={receiptRef}
               className="w-full bg-transparent flex justify-center p-1"
             >
-              {/* --- САМ ЧЕК --- */}
               <div
                 className="w-full p-6 shadow-2xl relative text-black transition-colors duration-500 ease-in-out"
                 style={{ backgroundColor: receiptBg }}
               >
-                {/* Зубчики зверху */}
                 <div
                   className="absolute top-0 left-0 w-full h-4 -mt-2 rotate-180 transition-all duration-500"
                   style={{
@@ -506,11 +496,26 @@ export default function Home() {
                   }}
                 ></div>
 
-                {/* Шапка чеку */}
+                {/* ХЕДЕР ЧЕКУ: Аватарка + Текст */}
                 <div className="text-center border-b-2 border-dashed border-black/20 pb-4 mb-4">
-                  <h2 className="text-2xl font-black uppercase tracking-widest">
-                    УКР ТРЕДС ТОВ
-                  </h2>
+                  {/* 🔥 ВІДОБРАЖЕННЯ АВАТАРКИ */}
+                  {result.avatar ? (
+                    <div className="w-20 h-20 mx-auto mb-3 rounded-full border-1 border-black overflow-hidden bg-white shadow-sm relative z-10">
+                      {/* Важливо: використовуємо звичайний img, не Next/Image, щоб html-to-image його бачив */}
+                      <img
+                        src={result.avatar}
+                        alt="Avatar"
+                        className="w-full h-full object-cover"
+                        crossOrigin="anonymous" // Додаткова страховка
+                      />
+                    </div>
+                  ) : (
+                    // Фолбек, якщо аватарки немає (смайлик)
+                    <div className="w-16 h-16 mx-auto mb-3 flex items-center justify-center text-4xl border-2 border-black rounded-full bg-white/50">
+                      👤
+                    </div>
+                  )}
+
                   <p className="text-xs text-gray-700 mt-1 font-semibold">
                     📍 {userLocation}
                   </p>
@@ -526,7 +531,6 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Статистика */}
                 <div className="space-y-3 mb-6 text-sm uppercase font-bold">
                   <div className="flex justify-between items-start gap-2">
                     <span>АРХЕТИП:</span>
@@ -549,8 +553,6 @@ export default function Home() {
                 </div>
 
                 <div className="border-b-2 border-dashed border-black/20 mb-4"></div>
-
-                {/* Опис */}
                 <div className="mb-4">
                   <p className="text-xs font-bold mb-1 text-gray-700">
                     СУПЕРСИЛА:
@@ -559,7 +561,6 @@ export default function Home() {
                     "{result.superpower}"
                   </p>
                 </div>
-
                 <div className="mb-6">
                   <p className="text-xs font-bold mb-1 text-gray-700">
                     ВЕРДИКТ:
@@ -568,8 +569,6 @@ export default function Home() {
                     {result.roast}
                   </p>
                 </div>
-
-                {/* Баркод */}
                 <div className="flex flex-col items-center justify-center space-y-2 overflow-hidden pb-2">
                   <div className="scale-y-125 opacity-90 mix-blend-multiply">
                     <Barcode
@@ -584,10 +583,6 @@ export default function Home() {
                       lineColor="#000000"
                     />
                   </div>
-                  <div className="font-mono text-xl tracking-[0.3em] font-bold">
-                    CHECK-{new Date().getFullYear()}
-                  </div>
-
                   <p className="text-xs font-bold uppercase mt-3 text-gray-600">
                     Товар поверненню не підлягає
                   </p>
@@ -595,8 +590,6 @@ export default function Home() {
                     generated by threads-vibe-check.vercel.app
                   </p>
                 </div>
-
-                {/* Зубчики знизу */}
                 <div
                   className="absolute bottom-0 left-0 w-full h-4 -mb-2 transition-all duration-500"
                   style={{
@@ -607,9 +600,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* --- КНОПКИ (КВАДРАТНІ) --- */}
             <div className="flex flex-col w-full gap-4">
-              {/* ЗБЕРЕГТИ: БІЛА КНОПКА З ЧОРНИМ ТЕКСТОМ І БІЛОЮ ТІННЮ */}
               <button
                 onClick={downloadImage}
                 disabled={isSaving}
@@ -617,8 +608,6 @@ export default function Home() {
               >
                 {isSaving ? "⏳ ЗБЕРІГАЮ..." : "📸 ЗБЕРЕГТИ ЧЕК"}
               </button>
-
-              {/* МОНОБАНК: ЧОРНА КНОПКА З БІЛОЮ РАМКОЮ І БІЛОЮ ТІННЮ */}
               <a
                 href={DONATE_LINK}
                 target="_blank"
@@ -628,7 +617,6 @@ export default function Home() {
                 <span className="text-xl">🤡</span>
                 <span>Сплатити штраф за крінж</span>
               </a>
-
               <button
                 onClick={resetApp}
                 className="mt-2 text-gray-400 font-bold hover:text-white underline decoration-2 underline-offset-4 transition uppercase text-xs tracking-widest"
