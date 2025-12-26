@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "html-to-image": "^1.11.13",
     "next": "16.1.1",
+    "openai": "^6.15.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-barcode": "^1.6.1",
+    "react-dom": "19.2.3",
+    "threads-api": "^1.6.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
