@@ -5,7 +5,7 @@ import { toPng } from "html-to-image";
 import Barcode from "react-barcode";
 
 // 🔥 ЧОРНИЙ СПИСОК (Пиши сюди ніки маленькими літерами)
-const BLACKLIST = ["russia", "putin", "moscow", "baduser", "rusnya"];
+const BLACKLIST = ["russia", "putin", "moscow", "rusnya", "brattkka"];
 
 // --- ЛОГІКА ГЕНЕРАЦІЇ ---
 const generateVibe = (username: string, posts: string[]) => {
@@ -176,7 +176,10 @@ export default function Home() {
             Цей нікнейм заблоковано системою.
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() =>
+              (window.location.href =
+                "https://www.meme-arsenal.com/memes/393326927f757e07d786936ad5d1f35e.jpg")
+            }
             className="px-8 py-3 bg-white text-black font-bold uppercase hover:bg-gray-200 transition"
           >
             Зрозумів, виходжу
@@ -189,7 +192,9 @@ export default function Home() {
         <div className="font-bold tracking-widest text-xs md:text-sm truncate mr-2">
           THREADS VIBE CHECK
         </div>
-        <div className="text-[10px] opacity-70 whitespace-nowrap">by Олег</div>
+        <div className="text-[10px] opacity-70 whitespace-nowrap">
+          powered by ileegantг
+        </div>
       </header>
 
       {/* АЛЕРТ */}
@@ -361,10 +366,6 @@ export default function Home() {
             </div>
           </div>
         )}
-
-        <footer className="fixed bottom-4 left-0 w-full text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest select-none pointer-events-none">
-          👨‍💻 Dev: Олег
-        </footer>
       </main>
     </>
   );
