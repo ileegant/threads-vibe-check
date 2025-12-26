@@ -453,14 +453,34 @@ export default function Home() {
             </p>
 
             {/* Блок з текстом */}
-            <div className="bg-[#1a1a1a] p-4 border border-white/20 mb-6 transform -rotate-1">
-              <p className="text-lg md:text-xl font-black text-[#F4FF5F] uppercase leading-relaxed tracking-wide">
-                "НА МІВІНУ З РЕВОМ
-                <br />
-                ПІД ПЕРЕГЛЯД ХОЛОСТЯКА
-                <br />
-                ДЛЯ ОЛЕГА"
-              </p>
+            <div className="bg-[#1a1a1a] border-2 border-dashed border-white/30 p-1 mb-6 transform -rotate-1 relative group hover:rotate-0 transition-transform duration-300">
+              {/* Ефект скотчу зверху (декор) */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-white/20 backdrop-blur rotate-1"></div>
+
+              <div className="bg-black/40 p-5 backdrop-blur-sm">
+                <p className="text-lg md:text-xl font-black text-[#F4FF5F] uppercase leading-relaxed tracking-wide mb-5 border-b border-white/10 pb-5">
+                  "НА МІВІНУ З РЕВОМ
+                  <br />
+                  ПІД ПЕРЕГЛЯД ХОЛОСТЯКА
+                  <br />
+                  ДЛЯ ОЛЕГА"
+                </p>
+
+                <div className="text-sm md:text-base font-bold text-gray-300 uppercase leading-relaxed tracking-wider">
+                  <span className="opacity-80">І НЕ ЗАБУВАЙТЕ</span>
+                  <br />
+                  <span>КУПЛЯТИ ШКАРПЕТКИ В</span>
+                  <br />
+                  <a
+                    href="https://www.instagram.com/chopers.wear/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white font-black text-lg md:text-xl border-b-4 border-[#FF9EAA] hover:bg-[#FF9EAA] hover:text-black transition-all inline-block mt-2 px-1 hover:scale-105 transform"
+                  >
+                    @CHOPERS.WEAR
+                  </a>
+                </div>
+              </div>
             </div>
 
             <a
