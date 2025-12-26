@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { toPng } from "html-to-image";
+import { toBlob } from "html-to-image";
 import Barcode from "react-barcode";
 
 // 🔧 НАЛАШТУВАННЯ
@@ -16,7 +16,6 @@ const BLACKLIST = [
   "rusnya",
   "brattkka",
   "glosssex",
-  "yprkt24",
 ];
 
 // 🎨 ПАЛІТРА
@@ -315,27 +314,54 @@ export default function Home() {
     setReceiptBg(RECEIPT_COLORS[0].hex);
   };
 
-  const downloadImage = useCallback(async () => {
+  const handleShare = useCallback(async () => {
     if (!receiptRef.current || isSaving) return;
     setIsSaving(true);
 
     try {
-      const dataUrl = await toPng(receiptRef.current, {
+      // 1. Генеруємо картинку як BLOB (живий файл у пам'яті)
+      const blob = await toBlob(receiptRef.current, {
         cacheBust: true,
         backgroundColor: "transparent",
         skipFonts: true,
         filter: (node) => node.tagName !== "LINK",
         style: { padding: "20px" },
-        pixelRatio: 2,
+        pixelRatio: 2, // Висока якість
       });
 
-      const link = document.createElement("a");
-      link.download = `vibe-${username.replace("@", "")}.png`;
-      link.href = dataUrl;
-      link.click();
+      if (!blob) throw new Error("Не вдалося створити файл");
+
+      // 2. Створюємо файл
+      const file = new File([blob], `vibe-${username.replace("@", "")}.png`, {
+        type: "image/png",
+      });
+
+      const shareData = {
+        title: "Threads Vibe Check",
+        text: `Мій чек за вайб у Threads. Перевір свій тут: https://threads-vibe-check.vercel.app`,
+        files: [file],
+      };
+
+      // 3. Перевіряємо: якщо це телефон і він вміє шерити файли -> ШЕРИМО
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare(shareData)
+      ) {
+        await navigator.share(shareData);
+      } else {
+        // 4. Якщо це комп'ютер (або шеринг заборонений) -> ПРОСТО КАЧАЄМО
+        const link = document.createElement("a");
+        link.download = `vibe-${username.replace("@", "")}.png`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      }
     } catch (err) {
-      console.error("Save error:", err);
-      showError("Не вдалося зберегти картинку 😢");
+      console.error("Share error:", err);
+      // Якщо раптом помилка (наприклад, скасовано шеринг), нічого страшного
+      if ((err as Error).name !== "AbortError") {
+        showError("Не вдалося поділитись 😢");
+      }
     } finally {
       setIsSaving(false);
     }
@@ -611,11 +637,47 @@ export default function Home() {
 
             <div className="flex flex-col w-full gap-4">
               <button
-                onClick={downloadImage}
+                onClick={handleShare} // <--- ТУТ ТЕПЕР НОВА ФУНКЦІЯ
                 disabled={isSaving}
                 className="w-full py-3 px-4 bg-white text-black border-2 border-white font-bold hover:bg-gray-200 transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-y-1 active:shadow-none text-sm flex items-center justify-center gap-2 uppercase disabled:opacity-50 rounded-none"
               >
-                {isSaving ? "⏳ ЗБЕРІГАЮ..." : "📸 ЗБЕРЕГТИ ЧЕК"}
+                {/* Іконка шерингу замість фотоапарата */}
+                {isSaving ? (
+                  "⏳ ОБРОБКА..."
+                ) : (
+                  <>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 12V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V12"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16 6L12 2L8 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M12 2V15"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    ПОДІЛИТИСЬ
+                  </>
+                )}
               </button>
               <a
                 href={DONATE_LINK}
