@@ -437,16 +437,64 @@ export default function Home() {
         </div>
       )}
 
-      <header
-        onClick={resetApp}
-        className="fixed top-0 left-0 w-full h-12 bg-[#0a0a0a] text-white flex items-center justify-between px-4 md:px-6 z-50 shadow-md select-none border-b border-white/5 cursor-pointer hover:bg-[#1a1a1a] transition-colors"
-      >
-        <div className="font-bold tracking-widest text-xs md:text-sm truncate mr-2 flex items-center gap-2">
-          THREADS VIBE CHECK
+      {loading && (
+        <div className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+          <div className="max-w-md w-full bg-[#111] border-2 border-white p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] relative overflow-hidden">
+            {/* Анімована смужка */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F4FF5F] via-[#FF9EAA] to-[#A0E9FF] animate-pulse"></div>
+
+            <div className="text-4xl mb-4 animate-bounce">🍝 + 🥤</div>
+
+            <h2 className="text-xl md:text-2xl font-black uppercase text-white mb-2 leading-tight">
+              ОБРОБКА ДАНИХ...
+            </h2>
+            <p className="text-gray-400 text-xs md:text-sm mb-6 font-mono border-b border-white/10 pb-4">
+              {loadingStep}
+            </p>
+
+            {/* Блок з текстом */}
+            <div className="bg-[#1a1a1a] p-4 border border-white/20 mb-6 transform -rotate-1">
+              <p className="text-lg md:text-xl font-black text-[#F4FF5F] uppercase leading-relaxed tracking-wide">
+                "НА МІВІНУ З РЕВОМ
+                <br />
+                ПІД ПЕРЕГЛЯД ХОЛОСТЯКА
+                <br />
+                ДЛЯ ОЛЕГА"
+              </p>
+            </div>
+
+            <a
+              href={DONATE_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-4 bg-white text-black font-black uppercase text-lg hover:bg-[#F4FF5F] transition-colors shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-y-1 active:shadow-none"
+            >
+              💸 ЗАКИНУТИ НА МІВІНУ
+            </a>
+
+            <p className="mt-4 text-[10px] text-gray-500 opacity-60">
+              (це пришвидшить генерацію... жартую, ні)
+            </p>
+          </div>
         </div>
-        <div className="text-[10px] opacity-70 whitespace-nowrap font-mono text-gray-400">
+      )}
+
+      <header className="fixed top-0 left-0 w-full h-12 bg-[#0a0a0a] text-white flex items-center justify-between px-4 md:px-6 z-50 shadow-md select-none border-b border-white/5">
+        <div
+          onClick={resetApp}
+          className="font-bold tracking-widest text-m md:text-xl truncate mr-2 flex items-center gap-2 cursor-pointer hover:opacity-75 transition-opacity"
+          title="На головну"
+        >
+          TRDS
+        </div>
+        <a
+          href={`https://www.threads.net/@${DEVELOPER_NAME}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] opacity-70 whitespace-nowrap font-mono text-gray-400 hover:text-white hover:opacity-100 transition-all cursor-pointer underline decoration-transparent hover:decoration-white underline-offset-2"
+        >
           powered by {DEVELOPER_NAME}
-        </div>
+        </a>
       </header>
 
       {errorMsg && (
@@ -458,7 +506,7 @@ export default function Home() {
       <main className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-4 md:p-6 font-mono pt-24 md:pt-20 pb-10 transition-colors duration-300">
         {!result && (
           <div className="text-center mb-8 animate-fade-in px-4">
-            <h1 className="text-4xl md:text-5xl font-black mb-2 uppercase tracking-tighter text-white">
+            <h1 className="text-3xl md:text-4xl font-black mb-2 uppercase tracking-tighter text-white">
               🧾 ЧЕК ТВОГО ТРЕДСУ
             </h1>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs mx-auto">
@@ -525,7 +573,7 @@ export default function Home() {
                 style={{ backgroundColor: receiptBg }}
               >
                 <div
-                  className="absolute top-0 left-0 w-full h-4 -mt-2 rotate-180 transition-all duration-500"
+                  className="absolute top-0 left-0 w-full h-4 -mt-2 rotate-180 transition-all duration-500 ease-in-out"
                   style={{
                     backgroundImage: `radial-gradient(circle, transparent 50%, ${receiptBg} 50%)`,
                     backgroundSize: "16px 16px",

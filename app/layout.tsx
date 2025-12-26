@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 // 1. Метадані для пошуковиків і соцмереж (Телеграм, Тредс, Інста)
 export const metadata: Metadata = {
-  title: "Threads Vibe Check | Твій чек за крінж",
+  title: "TRDS | Що з твоїм профілем?",
   description:
-    "ШІ просканує твій профіль, виміряє рівень токсичності та випише фіскальний чек. Готуй виправдання! Створено by ileegant.",
+    "ШІ-сканер акаунту. Перевір, як твій Threads виглядає зі сторони. Створено by ileegant.",
   keywords: [
     "threads",
     "vibe check",
@@ -28,16 +28,16 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ileegant" }],
   openGraph: {
-    title: "Threads Vibe Check",
+    title: "TRDS",
     description:
       "Дізнайся, хто ти: Душніла чи Амбасадор вигорання? Отримай свій чек.",
     type: "website",
     locale: "uk_UA",
-    siteName: "Threads Vibe Check",
+    siteName: "TRDS",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Threads Vibe Check",
+    title: "TRDS",
     description: "Фіскальний чек твого его. Перевір себе.",
   },
   icons: {
