@@ -459,27 +459,12 @@ export default function Home() {
 
               <div className="bg-black/40 p-5 backdrop-blur-sm">
                 <p className="text-lg md:text-xl font-black text-[#F4FF5F] uppercase leading-relaxed tracking-wide mb-5 border-b border-white/10 pb-5">
-                  "НА МІВІНУ З РЕВОМ
+                  "Тредс гуде від чеків,
                   <br />
-                  ПІД ПЕРЕГЛЯД ХОЛОСТЯКА
+                  а банка розроба сумує.
                   <br />
-                  ДЛЯ ОЛЕГА"
+                  Стань винятком."
                 </p>
-
-                <div className="text-sm md:text-base font-bold text-gray-300 uppercase leading-relaxed tracking-wider">
-                  <span className="opacity-80">І НЕ ЗАБУВАЙТЕ</span>
-                  <br />
-                  <span>КУПЛЯТИ ШКАРПЕТКИ В</span>
-                  <br />
-                  <a
-                    href="https://www.instagram.com/chopers.wear/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white font-black text-lg md:text-xl border-b-4 border-[#FF9EAA] hover:bg-[#FF9EAA] hover:text-black transition-all inline-block mt-2 px-1 hover:scale-105 transform"
-                  >
-                    @CHOPERS.WEAR
-                  </a>
-                </div>
               </div>
             </div>
 
@@ -489,7 +474,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="block w-full py-4 bg-white text-black font-black uppercase text-lg hover:bg-[#F4FF5F] transition-colors shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-y-1 active:shadow-none"
             >
-              💸 ЗАКИНУТИ НА МІВІНУ
+              💸 ЗАКИНУТИ 5 ГРИВЕНЬ
             </a>
 
             <p className="mt-4 text-[10px] text-gray-500 opacity-60">
@@ -568,6 +553,9 @@ export default function Home() {
           </div>
         ) : (
           <div className="flex flex-col items-center gap-6 w-full max-w-[380px] animate-slide-up">
+            <div className="-mb-4 text-sm uppercase font-bold">
+              Виберіть тему:
+            </div>
             <div className="flex gap-3 mb-2 bg-[#111] p-3 border border-white/10 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)]">
               {RECEIPT_COLORS.map((color) => (
                 <button
@@ -754,8 +742,8 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="w-full py-3 px-4 bg-black text-white border-2 border-white font-bold flex items-center justify-center gap-3 hover:bg-[#111] transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-y-1 active:shadow-none uppercase text-sm rounded-none"
               >
-                <span className="text-xl">🤡</span>
-                <span>Сплатити штраф за крінж</span>
+                <span className="text-xl">☕️</span>
+                <span>На каву розрабу</span>
               </a>
               <button
                 onClick={resetApp}
