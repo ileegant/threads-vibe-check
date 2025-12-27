@@ -4,11 +4,9 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { toBlob } from "html-to-image";
 import Barcode from "react-barcode";
 
-// 🔧 НАЛАШТУВАННЯ
 const DONATE_LINK = "https://send.monobank.ua/jar/3Koj5bwvda";
 const DEVELOPER_NAME = "ileegant";
 
-// 🔥 ЧОРНИЙ СПИСОК
 const BLACKLIST = [
   "russia",
   "putin",
@@ -17,6 +15,16 @@ const BLACKLIST = [
   "brattkka",
   "glosssex",
   "drvlska",
+];
+
+const LOADING_PHRASES = [
+  "🍜 Заварюю Мівіну (без сосисок)...",
+  "💸 Перевіряю баланс картки (там 0)...",
+  "💣 Рахую, скільки русні здохло сьогодні...",
+  "🔌 Шукаю павербанк, бо світло блимає...",
+  "🇺🇦 Вмикаю режим 'Лютий Українець'...",
+  "📡 Сканую твій профіль на крінж...",
+  "🫡 Майже готово, готуй донат...",
 ];
 
 // 🎨 ПАЛІТРА
@@ -281,26 +289,47 @@ export default function Home() {
 
     setLoading(true);
     setResult(null);
-    setLoadingStep("🔄 Підключаємось до Threads...");
+
+    // 👇 ЛОГІКА НА 5 СЕКУНД
+    let stepIndex = 0;
+    setLoadingStep(LOADING_PHRASES[0]);
+
+    // Міняємо фразу кожні 800мс
+    const interval = setInterval(() => {
+      stepIndex++;
+      if (stepIndex < LOADING_PHRASES.length) {
+        setLoadingStep(LOADING_PHRASES[stepIndex]);
+      }
+    }, 800);
 
     try {
-      const response = await fetch("/api/get-threads", {
+      // Паралельно робимо запит
+      const responsePromise = fetch("/api/get-threads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: cleanNick }),
       });
 
+      // 👇 ГАРАНТОВАНА ЗАТРИМКА МІНІМУМ 5 СЕКУНД (5000 мс)
+      const [response] = await Promise.all([
+        responsePromise,
+        new Promise((resolve) => setTimeout(resolve, 5000)),
+      ]);
+
       const data = await response.json();
       const postsData = data.posts || [];
-      const avatarData = data.avatar || null; // Отримуємо аватарку
+      const avatarData = data.avatar || null;
 
-      setLoadingStep("🧠 Аналізуємо ваші думки...");
-      await new Promise((r) => setTimeout(r, 800));
+      clearInterval(interval);
+      setLoadingStep("Фіналізуємо чек...");
 
       const aiResult = generateVibe(cleanNick, postsData, avatarData);
       setResult(aiResult);
     } catch (error) {
       console.warn("API Error, generating locally");
+      clearInterval(interval);
+      // Все одно чекаємо, якщо помилка вилетіла швидко
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const aiResult = generateVibe(cleanNick, [], undefined);
       setResult(aiResult);
     } finally {
@@ -438,48 +467,58 @@ export default function Home() {
       )}
 
       {loading && (
-        <div className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center animate-fade-in">
-          <div className="max-w-md w-full bg-[#111] border-2 border-white p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(255,255,255,0.2)] relative overflow-hidden">
-            {/* Анімована смужка */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F4FF5F] via-[#FF9EAA] to-[#A0E9FF] animate-pulse"></div>
-
-            <div className="text-4xl mb-4 animate-bounce">🍝 + 🥤</div>
-
-            <h2 className="text-xl md:text-2xl font-black uppercase text-white mb-2 leading-tight">
-              ОБРОБКА ДАНИХ...
-            </h2>
-            <p className="text-gray-400 text-xs md:text-sm mb-6 font-mono border-b border-white/10 pb-4">
-              {loadingStep}
-            </p>
-
-            {/* Блок з текстом */}
-            <div className="bg-[#1a1a1a] border-2 border-dashed border-white/30 p-1 mb-6 transform -rotate-1 relative group hover:rotate-0 transition-transform duration-300">
-              {/* Ефект скотчу зверху (декор) */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 bg-white/20 backdrop-blur rotate-1"></div>
-
-              <div className="bg-black/40 p-5 backdrop-blur-sm">
-                <p className="text-lg md:text-xl font-black text-[#F4FF5F] uppercase leading-relaxed tracking-wide mb-5 border-b border-white/10 pb-5">
-                  "Тредс гуде від чеків,
-                  <br />
-                  а банка розроба сумує.
-                  <br />
-                  Стань винятком."
-                </p>
+        <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in font-mono">
+          <div className="max-w-xs w-full relative bg-[#111] px-4 pb-4 -pt-4 border border-white/10 shadow-2xl">
+            {/* 1. АНІМОВАНИЙ КОТИК */}
+            <div className="flex justify-center mb-6 -mt-20">
+              <div className="text-7xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                <img
+                  src="https://imgpng.ru/d/cat_PNG50432.png"
+                  alt="Mono"
+                  className=""
+                />
               </div>
             </div>
 
+            {/* 2. СТАТУС СИСТЕМИ */}
+            <div className="space-y-3 mb-8 text-left border-l-2 border-white/20 pl-4 py-1">
+              <div className="flex justify-between text-[10px] uppercase tracking-widest text-gray-500">
+                <span>СИСТЕМА:</span>
+                <span className="text-white animate-pulse">ОБРОБЛЯЄ...</span>
+              </div>
+              <div className="flex justify-between text-[10px] uppercase tracking-widest text-gray-500">
+                <span>ГОЛОД КОТА:</span>
+                <span className="text-red-500 font-bold">
+                  КРИТИЧНИЙ (99%) ⚠️
+                </span>
+              </div>
+              <p className="text-xs text-gray-300 mt-2 leading-tight">
+                Розробник працює за їжу. Котик теж.
+              </p>
+            </div>
+
+            {/* 3. КНОПКА МОНОБАНК (НА КОРМ) */}
             <a
               href={DONATE_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full py-4 bg-white text-black font-black uppercase text-lg hover:bg-[#F4FF5F] transition-colors shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-y-1 active:shadow-none"
+              className="group relative block w-full"
             >
-              💸 ЗАКИНУТИ 5 ГРИВЕНЬ
+              {/* Рожеве світіння (як лапки) */}
+              <div className="absolute inset-0 bg-pink-500 blur opacity-20 group-hover:opacity-50 transition-opacity duration-500" />
+
+              <button className="relative w-full py-4 bg-white text-black font-black uppercase text-m md:text-m tracking-widest hover:bg-gray-200 transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] active:translate-y-1 active:shadow-none flex items-center justify-center gap-2">
+                <span className="text-lg">🐟</span>
+                НА КОРМ КОТИКУ
+              </button>
             </a>
 
-            <p className="mt-4 text-[10px] text-gray-500 opacity-60">
-              (це пришвидшить генерацію... жартую, ні)
-            </p>
+            {/* 4. МІКРО-ПІДПИС */}
+            <div className="mt-4 flex items-center justify-center gap-2 opacity-50">
+              <span className="text-[9px] uppercase tracking-widest text-white">
+                MONOBANK БАНКА
+              </span>
+            </div>
           </div>
         </div>
       )}
