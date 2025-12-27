@@ -368,7 +368,7 @@ export default function Home() {
 
       const shareData = {
         title: "Threads Vibe Check",
-        text: `Мій чек за вайб у Threads. Перевір свій тут: https://threads-vibe-check.vercel.app`,
+        text: `Заціни мій вайб-чек у Threads 🧾✨\nЗробити собі: https://threads-vibe-check.vercel.app\n\n😽 На корм для котика: ${DONATE_LINK}`,
         files: [file],
       };
 
