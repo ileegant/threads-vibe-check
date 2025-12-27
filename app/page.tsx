@@ -472,11 +472,7 @@ export default function Home() {
             {/* 1. АНІМОВАНИЙ КОТИК */}
             <div className="flex justify-center mb-6 -mt-20">
               <div className="text-7xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-                <img
-                  src="https://imgpng.ru/d/cat_PNG50432.png"
-                  alt="Mono"
-                  className=""
-                />
+                <img src="/cat.png" alt="Hungry Cat" />
               </div>
             </div>
 
